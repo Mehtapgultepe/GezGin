@@ -1,0 +1,184 @@
+@model GezGin.Models.Tour
+@{
+    ViewData["Title"] = Model.TourName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var relatedTours = ViewBag.RelatedTours as List<GezGin.Models.Tour>;
+}
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+    <div class="container">
+        <div class="breadcrumb-custom mb-3">
+            <a href="/">Ana Sayfa</a>
+            <span>/</span>
+            <a href="/Tour/Index">Turlar</a>
+            <span>/</span> @Model.TourName
+        </div>
+        <h1>@Model.TourName</h1>
+        <p><i class="fas fa-map-marker-alt me-2" style="color: var(--accent);"></i>@Model.City, @Model.Country</p>
+    </div>
+</div>
+
+<section>
+    <div class="container">
+        <div class="row g-5">
+            <!-- LEFT: Tour Info -->
+            <div class="col-lg-8">
+                <img src="@Model.ImageUrl" alt="@Model.TourName" class="detail-img mb-4" />
+
+                <!-- Badges -->
+                <div class="d-flex gap-2 flex-wrap mb-4">
+                    <span class="badge" style="background: var(--primary); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 50px;">
+                        <i class="fas fa-tag me-1"></i> @Model.Category
+                    </span>
+                    <span class="badge" style="background: @(Model.IsAvailable ? "#28a745" : "#dc3545"); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 50px;">
+                        <i class="fas fa-@(Model.IsAvailable ? "check-circle" : "times-circle") me-1"></i>
+                        @(Model.IsAvailable ? "Müsait" : "Kontenjan Dolu")
+                    </span>
+                    <span class="badge" style="background: var(--accent); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 50px;">
+                        <i class="fas fa-star me-1"></i> @Model.Rating / 5.0
+                    </span>
+                </div>
+
+                <!-- Description -->
+                <div class="detail-card mb-4">
+                    <h4 style="font-family: var(--font-display); color: var(--primary); margin-bottom: 1rem;">Tur Hakkında</h4>
+                    <p style="line-height: 1.9; color: var(--text-muted);">@Model.Description</p>
+                </div>
+
+                <!-- Includes -->
+                <div class="detail-card">
+                    <h4 style="font-family: var(--font-display); color: var(--primary); margin-bottom: 1.2rem;">Tura Dahil Olanlar</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Konaklama (@Model.DurationDays gece)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Profesyonel Rehber</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Yarım Pansiyon</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Havalimanı Transferi</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Gezi Programı</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                <span style="font-size: 0.9rem;">Seyahat Sigortası</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Price & Booking -->
+            <div class="col-lg-4">
+                <div class="detail-price-box">
+                    <p style="opacity: 0.7; font-size: 0.85rem; margin-bottom: 0.3rem;">Kişi Başı</p>
+                    <div class="price-big">@Model.Price.ToString("N0") €</div>
+                    <p style="opacity: 0.7; font-size: 0.8rem; margin-top: 0.3rem;">Vergi dahil</p>
+
+                    <hr style="border-color: rgba(255,255,255,0.15);" />
+
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <small style="opacity:0.7; font-size:0.78rem;">Süre</small>
+                            <div style="font-weight:600;">@Model.DurationDays Gün / @(Model.DurationDays - 1) Gece</div>
+                        </div>
+                    </div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon"><i class="fas fa-users"></i></div>
+                        <div>
+                            <small style="opacity:0.7; font-size:0.78rem;">Kapasite</small>
+                            <div style="font-weight:600;">Maksimum @Model.MaxPersons Kişi</div>
+                        </div>
+                    </div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <small style="opacity:0.7; font-size:0.78rem;">Destinasyon</small>
+                            <div style="font-weight:600;">@Model.City, @Model.Country</div>
+                        </div>
+                    </div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon"><i class="fas fa-star"></i></div>
+                        <div>
+                            <small style="opacity:0.7; font-size:0.78rem;">Puan</small>
+                            <div style="font-weight:600;">@Model.Rating / 5.0 ⭐</div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.15);" />
+
+                    @if (Model.IsAvailable)
+                    {
+                        <a href="/Booking/Create?tourId=@Model.Id" class="btn-primary-custom">
+                            <i class="fas fa-calendar-check me-2"></i> Rezervasyon Yap
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn-primary-custom" disabled style="opacity:0.5; cursor:not-allowed;">
+                            <i class="fas fa-times-circle me-2"></i> Kontenjan Dolu
+                        </button>
+                    }
+
+                    <a href="/Tour/Index" class="d-block text-center mt-3" style="color: rgba(255,255,255,0.6); font-size:0.85rem; text-decoration:none;">
+                        ← Tüm Turlara Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATED TOURS -->
+        @if (relatedTours != null && relatedTours.Count > 0)
+        {
+            <div class="mt-5 pt-4">
+                <h3 style="font-family: var(--font-display); color: var(--primary); margin-bottom: 2rem;">
+                    Benzer Turlar
+                </h3>
+                <div class="row g-4">
+                    @foreach (var t in relatedTours)
+                    {
+                        <div class="col-md-6">
+                            <div class="tour-card">
+                                <div class="tour-card-img-wrapper">
+                                    <img src="@t.ImageUrl" alt="@t.TourName" class="tour-card-img" style="height:180px;" />
+                                    <span class="tour-badge-category">@t.Category</span>
+                                </div>
+                                <div class="tour-card-body">
+                                    <h5 class="tour-card-title">@t.TourName</h5>
+                                    <p class="tour-location"><i class="fas fa-map-marker-alt"></i> @t.City, @t.Country</p>
+                                    <div class="tour-footer">
+                                        <div class="tour-price">@t.Price.ToString("N0") € <small>/kişi</small></div>
+                                        <a href="/Tour/Details/@t.Id" class="btn-tour">Detaylar →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>

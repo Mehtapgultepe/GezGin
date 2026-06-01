@@ -1,0 +1,157 @@
+@model GezGin.Models.Booking
+@{
+    ViewData["Title"] = "Rezervasyon Yap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tours = ViewBag.Tours as List<GezGin.Models.Tour>;
+}
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+    <div class="container">
+        <div class="breadcrumb-custom mb-3">
+            <a href="/">Ana Sayfa</a>
+            <span>/</span> Rezervasyon
+        </div>
+        <h1>Rezervasyon Yap</h1>
+        <p>Birkaç adımda hayalindeki tura rezervasyon yapabilirsin</p>
+    </div>
+</div>
+
+<section>
+    <div class="container">
+        <div class="row g-5">
+            <!-- FORM -->
+            <div class="col-lg-7">
+                <div class="booking-form-card">
+                    <h4 style="font-family: var(--font-display); color: var(--primary); margin-bottom: 0.5rem;">Kişisel Bilgiler</h4>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 2rem;">Tüm alanları eksiksiz doldurunuz.</p>
+
+                    <form asp-action="Create" asp-controller="Booking" method="post" class="needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-1" style="color: var(--accent);"></i> Ad Soyad *
+                                </label>
+                                <input asp-for="FullName" class="form-control" placeholder="Adınızı ve soyadınızı giriniz" />
+                                <span asp-validation-for="FullName" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope me-1" style="color: var(--accent);"></i> E-posta *
+                                </label>
+                                <input asp-for="Email" class="form-control" placeholder="ornek@email.com" type="email" />
+                                <span asp-validation-for="Email" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-phone me-1" style="color: var(--accent);"></i> Telefon *
+                                </label>
+                                <input asp-for="Phone" class="form-control" placeholder="0555 000 00 00" />
+                                <span asp-validation-for="Phone" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-users me-1" style="color: var(--accent);"></i> Kişi Sayısı *
+                                </label>
+                                <input asp-for="PersonCount" id="personCount" class="form-control" type="number" min="1" max="20" placeholder="1"
+                                       oninput="updatePrice()" />
+                                <span asp-validation-for="PersonCount" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar me-1" style="color: var(--accent);"></i> Gidiş Tarihi *
+                                </label>
+                                <input asp-for="TravelDate" class="form-control" type="date"
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="TravelDate" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-plane me-1" style="color: var(--accent);"></i> Tur Seçiniz *
+                                </label>
+                                <select asp-for="SelectedTourId" id="tourSelect" class="form-select" onchange="updatePrice()">
+                                    <option value="">-- Tur Seçiniz --</option>
+                                    @if (tours != null)
+                                    {
+                                        @foreach (var tour in tours)
+                                        {
+                                            <option value="@tour.Id"
+                                                    data-price="@tour.Price"
+                                                    selected="@(Model.SelectedTourId == tour.Id)">
+                                                @tour.TourName - @tour.Country (@tour.Price.ToString("N0") €/kişi)
+                                            </option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedTourId" class="text-danger" style="font-size:0.82rem;"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-sticky-note me-1" style="color: var(--accent);"></i> Notlar (İsteğe Bağlı)
+                                </label>
+                                <textarea asp-for="Notes" class="form-control" rows="3"
+                                          placeholder="Özel istekleriniz, engellilik durumu vb."></textarea>
+                            </div>
+
+                            <div class="col-12 mt-2">
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-calendar-check me-2"></i> Rezervasyonu Tamamla
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SUMMARY SIDEBAR -->
+            <div class="col-lg-5">
+                <div class="booking-summary">
+                    <h5><i class="fas fa-receipt me-2" style="color: var(--accent);"></i>Rezervasyon Özeti</h5>
+                    <div class="summary-row">
+                        <span>Seçilen Tur</span>
+                        <span style="font-weight: 600;">Seçiniz...</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Kişi Başı Fiyat</span>
+                        <span id="pricePerPerson" style="font-weight: 600;">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Kişi Sayısı</span>
+                        <span style="font-weight: 600;">-</span>
+                    </div>
+                    <div class="summary-row" style="padding-top: 1rem;">
+                        <span style="font-size: 1.1rem; font-weight: 700; color: white;">Toplam Tutar</span>
+                        <span id="dynamicPrice" class="summary-total">0 €</span>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.2); margin: 1.5rem 0;" />
+
+                    <div style="font-size: 0.82rem; opacity: 0.7;">
+                        <p><i class="fas fa-info-circle me-1"></i> Fiyatlara KDV dahildir.</p>
+                        <p><i class="fas fa-check me-1"></i> Ücretsiz iptal: Tur başlangıcından 14 gün öncesine kadar.</p>
+                        <p><i class="fas fa-shield-alt me-1"></i> Tam kapsamlı seyahat sigortası dahildir.</p>
+                    </div>
+                </div>
+
+                <!-- Contact Box -->
+                <div class="mt-4 p-3 rounded-3" style="background: var(--bg-light); border-left: 4px solid var(--accent);">
+                    <p style="font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">
+                        <i class="fas fa-headset me-2" style="color: var(--accent);"></i>Yardıma mı ihtiyacınız var?
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                        <i class="fas fa-phone me-1"></i> +90 212 000 00 00<br/>
+                        <i class="fas fa-envelope me-1"></i> rezervasyon@gezgin.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,106 @@
+@model List<GezGin.Models.Tour>
+@{
+    ViewData["Title"] = "Turlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedCategory = ViewBag.SelectedCategory as string;
+    var onlyAvailable = ViewBag.OnlyAvailable as bool?;
+    var categories = ViewBag.Categories as List<string>;
+}
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+    <div class="container">
+        <div class="breadcrumb-custom mb-3">
+            <a href="/">Ana Sayfa</a>
+            <span>/</span> Turlar
+        </div>
+        <h1>@(onlyAvailable == true ? "Müsait Turlar" : "Tüm Turlarımız")</h1>
+        <p>Dünyayı keşfetmek için en iyi rotalar burada</p>
+    </div>
+</div>
+
+<section>
+    <div class="container">
+        <!-- FILTER BAR -->
+        <div class="filter-bar">
+            <div class="row align-items-center g-3">
+                <div class="col-md-8">
+                    <strong style="color: var(--primary); margin-right: 1rem; font-size: 0.9rem;">Filtrele:</strong>
+                    <a href="/Tour/Index" class="filter-btn @(string.IsNullOrEmpty(selectedCategory) && onlyAvailable != true ? "active" : "")">Tümü</a>
+                    @if (categories != null)
+                    {
+                        @foreach (var cat in categories)
+                        {
+                            <a href="/Tour/Index?category=@cat" class="filter-btn @(selectedCategory == cat ? "active" : "")">@cat</a>
+                        }
+                    }
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="/Tour/Available" class="filter-btn accent @(onlyAvailable == true ? "active" : "")">
+                        <i class="fas fa-check-circle me-1"></i> Sadece Müsait
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOUR COUNT -->
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                <strong style="color: var(--primary);">@Model.Count</strong> tur bulundu
+            </p>
+        </div>
+
+        <!-- TOURS GRID -->
+        @if (Model.Count == 0)
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-plane-slash fa-3x mb-3" style="color: var(--text-muted);"></i>
+                <h5 style="color: var(--text-muted);">Bu kategoride tur bulunamadı.</h5>
+                <a href="/Tour/Index" class="btn-tour mt-3 d-inline-block">Tüm Turları Gör</a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var tour in Model)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="tour-card">
+                            <div class="tour-card-img-wrapper">
+                                <img src="@tour.ImageUrl" alt="@tour.TourName" class="tour-card-img" />
+                                <span class="tour-badge-category">@tour.Category</span>
+                                @if (!tour.IsAvailable)
+                                {
+                                    <span class="tour-badge-unavailable">Dolu</span>
+                                }
+                            </div>
+                            <div class="tour-card-body">
+                                <h5 class="tour-card-title">@tour.TourName</h5>
+                                <p class="tour-location">
+                                    <i class="fas fa-map-marker-alt"></i> @tour.City, @tour.Country
+                                </p>
+                                <p class="tour-desc">@tour.ShortDescription</p>
+                                <div class="tour-meta">
+                                    <span><i class="fas fa-clock"></i> @tour.DurationDays Gün</span>
+                                    <span><i class="fas fa-users"></i> Max @tour.MaxPersons Kişi</span>
+                                    <span>
+                                        <i class="fas fa-star" style="color: var(--accent);"></i> @tour.Rating
+                                    </span>
+                                </div>
+                                <div class="tour-footer">
+                                    <div class="tour-price">
+                                        @tour.Price.ToString("N0") €
+                                        <small>/kişi</small>
+                                    </div>
+                                    <a href="/Tour/Details/@tour.Id" class="btn-tour">
+                                        Detaylar <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

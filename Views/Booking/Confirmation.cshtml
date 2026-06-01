@@ -1,0 +1,110 @@
+@model GezGin.Models.Booking
+@{
+    ViewData["Title"] = "Rezervasyon Onayı";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tour = ViewBag.Tour as GezGin.Models.Tour;
+    var totalPrice = (decimal)ViewBag.TotalPrice;
+}
+
+<div class="page-hero" style="padding: 7rem 0 3rem;">
+    <div class="container text-center">
+        <h1>Rezervasyon Onayı</h1>
+    </div>
+</div>
+
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="confirmation-box">
+                    <!-- Success Icon -->
+                    <div class="confirmation-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+
+                    <h2 style="font-family: var(--font-display); color: var(--primary); margin-bottom: 0.5rem;">
+                        Rezervasyon Başarılı!
+                    </h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                        Rezervasyonunuz alındı. Onay e-postası <strong>@Model.Email</strong> adresine gönderildi.
+                    </p>
+
+                    <!-- Reservation Code -->
+                    <div style="background: var(--bg-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 2rem;">
+                        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.3rem;">Rezervasyon Numaranız</p>
+                        <p style="font-family: var(--font-display); font-size: 1.8rem; color: var(--accent); font-weight: 700; margin: 0;">
+                            GZG-@Model.Id.ToString("D5")
+                        </p>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="mb-3">
+                        <div class="confirmation-detail-row">
+                            <span class="conf-label"><i class="fas fa-user me-2" style="color: var(--accent);"></i>Ad Soyad</span>
+                            <span class="conf-value">@Model.FullName</span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="conf-label"><i class="fas fa-envelope me-2" style="color: var(--accent);"></i>E-posta</span>
+                            <span class="conf-value">@Model.Email</span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="conf-label"><i class="fas fa-phone me-2" style="color: var(--accent);"></i>Telefon</span>
+                            <span class="conf-value">@Model.Phone</span>
+                        </div>
+
+                        @if (tour != null)
+                        {
+                            <div class="confirmation-detail-row">
+                                <span class="conf-label"><i class="fas fa-plane me-2" style="color: var(--accent);"></i>Tur</span>
+                                <span class="conf-value">@tour.TourName</span>
+                            </div>
+                            <div class="confirmation-detail-row">
+                                <span class="conf-label"><i class="fas fa-map-marker-alt me-2" style="color: var(--accent);"></i>Destinasyon</span>
+                                <span class="conf-value">@tour.City, @tour.Country</span>
+                            </div>
+                            <div class="confirmation-detail-row">
+                                <span class="conf-label"><i class="fas fa-clock me-2" style="color: var(--accent);"></i>Süre</span>
+                                <span class="conf-value">@tour.DurationDays Gün</span>
+                            </div>
+                        }
+
+                        <div class="confirmation-detail-row">
+                            <span class="conf-label"><i class="fas fa-calendar me-2" style="color: var(--accent);"></i>Gidiş Tarihi</span>
+                            <span class="conf-value">@Model.TravelDate.ToString("dd MMMM yyyy")</span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="conf-label"><i class="fas fa-users me-2" style="color: var(--accent);"></i>Kişi Sayısı</span>
+                            <span class="conf-value">@Model.PersonCount Kişi</span>
+                        </div>
+                        <div class="confirmation-detail-row" style="background: rgba(232,168,56,0.08); padding: 0.9rem 0.5rem; border-radius: 8px; margin-top: 0.5rem;">
+                            <span class="conf-label" style="font-size: 1rem;">
+                                <i class="fas fa-money-bill-wave me-2" style="color: var(--accent);"></i>Toplam Tutar
+                            </span>
+                            <span style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--accent);">
+                                @totalPrice.ToString("N0") €
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div style="background: var(--bg-light); border-radius: var(--radius-sm); padding: 1rem; text-align:left; margin-bottom: 1.5rem;">
+                            <p style="font-weight:600; color: var(--primary); font-size: 0.88rem; margin-bottom: 0.3rem;">Notlar:</p>
+                            <p style="color: var(--text-muted); font-size: 0.88rem; margin:0;">@Model.Notes</p>
+                        </div>
+                    }
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-3 justify-content-center flex-wrap mt-3">
+                        <a href="/Tour/Index" class="btn-tour" style="padding: 0.8rem 2rem;">
+                            <i class="fas fa-plane me-2"></i> Diğer Turlar
+                        </a>
+                        <a href="/" class="btn-primary-custom" style="width: auto; padding: 0.8rem 2rem; display: inline-block;">
+                            <i class="fas fa-home me-2"></i> Ana Sayfa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
