@@ -1,90 +1,172 @@
-# 🛒 StokSepeti
+# ✈️ GezGin — Seyahat Acentesi Web Sitesi
 
-Gıda Son Tüketim Tarihi ve Mutfak Stok Takip Sistemi
+> LBLM362 Web Programlama dersi kapsamında ASP.NET Core MVC ile geliştirilmiş seyahat acentesi web uygulaması.
 
-## Proje Hakkında
+---
 
-StokSepeti, mutfaktaki ürünlerin son tüketim tarihlerini takip eden, israfı önlemeye yardımcı olan bir web uygulamasıdır. Ürünler otomatik olarak **Taze**, **Kritik** (3 gün veya daha az) ve **Tarihi Geçmiş** olarak etiketlenir.
+## 📋 Proje Hakkında
 
-## Teknolojiler
+**GezGin**, gerçek bir seyahat acentesinin dijital ihtiyaçlarını karşılamak üzere tasarlanmış, 5 sayfalı tam işlevsel bir web uygulamasıdır. Kullanıcılar turları listeleyebilir, detaylarını inceleyebilir ve online rezervasyon yapabilir.
 
-- **Frontend:** Vanilla JavaScript (SPA), HTML, CSS
-- **Backend:** Node.js, Express
-- **Veritabanı:** SQLite (better-sqlite3)
-- **API Dokümantasyonu:** Swagger UI (OpenAPI 3.0)
-- **Test:** Jest
+| Bilgi | Detay |
+|---|---|
+| Ders | LBLM362 Web Programlama |
+| Hoca | Doç. Dr. Pınar Karadayı Ataş |
+| Dönem | 2025-2026 Bahar |
+| Öğrenci | Mehtap Gültepe |
 
-## Kurulum
+---
+
+## 🔗 Proje Linkleri
+
+- 🎥 **Demo Video:** [Google Drive](https://drive.google.com/file/d/1PdYeOoMgi2OBoZMLZ3pBMkZQDOSOZ_WR/view?usp=share_link)
+- 📊 **Sunum:** [Google Slides](https://docs.google.com/presentation/d/1TytSqey7dTe4qAPN2ikcOcps8TYGLniT/edit?usp=sharing)
+- 💻 **GitHub:** [github.com/Mehtapgultepe/GezGin](https://github.com/Mehtapgultepe/GezGin)
+
+---
+
+## 🛠️ Kullanılan Teknolojiler
+
+- **ASP.NET Core MVC** (.NET 10)
+- **HTML5 & CSS3**
+- **JavaScript ES6+**
+- **Bootstrap 5.3**
+- **Font Awesome 6.4**
+- **Google Fonts** (Playfair Display & Poppins)
+
+---
+
+## 📁 Proje Yapısı
+
+```
+GezGin/
+├── Controllers/
+│   ├── HomeController.cs
+│   ├── TourController.cs
+│   ├── BookingController.cs
+│   └── AboutController.cs
+├── Models/
+│   ├── Tour.cs
+│   └── Booking.cs
+├── Views/
+│   ├── Home/
+│   │   └── Index.cshtml
+│   ├── Tour/
+│   │   ├── Index.cshtml
+│   │   └── Details.cshtml
+│   ├── Booking/
+│   │   ├── Create.cshtml
+│   │   └── Confirmation.cshtml
+│   ├── About/
+│   │   └── Index.cshtml
+│   └── Shared/
+│       └── _Layout.cshtml
+├── wwwroot/
+│   ├── css/site.css
+│   └── js/site.js
+├── Program.cs
+└── GezGin.csproj
+```
+
+---
+
+## 📄 Sayfalar
+
+| # | Sayfa | URL | Açıklama |
+|---|---|---|---|
+| 1 | Ana Sayfa | `/` | Hero banner, öne çıkan turlar, istatistikler |
+| 2 | Tur Listesi | `/Tour/Index` | Tüm turlar, kategori ve müsaitlik filtresi |
+| 3 | Tur Detayı | `/Tour/Details/{id}` | Tur bilgileri, fiyat, dahil olanlar |
+| 4 | Rezervasyon | `/Booking/Create` | Form doğrulama, dinamik fiyat hesaplama |
+| 5 | Onay | `/Booking/Confirmation/{id}` | Rezervasyon onay sayfası |
+| + | Hakkımızda | `/About/Index` | Şirket, ekip ve iletişim |
+| + | Müsait Turlar | `/Tour/Available` | Sadece müsait turlar |
+
+---
+
+## 🚀 Kurulum ve Çalıştırma
 
 ### Gereksinimler
-
-- Node.js v18+
-- npm
+- .NET 10 SDK → [İndir](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ### Adımlar
 
 ```bash
-git clone https://github.com/KULLANICI_ADIN/stok-sepeti.git
-cd stok-sepeti/backend
-npm install
-npm start
+# Repoyu klonla
+git clone https://github.com/Mehtapgultepe/GezGin.git
+
+# Klasöre gir
+cd GezGin
+
+# Çalıştır
+dotnet run
 ```
 
-Frontend için `frontend/index.html` dosyasını tarayıcıda açın.
+Tarayıcıda aç: **http://localhost:5000**
 
-## Çalıştırma
+---
 
-```bash
-cd backend
-npm start
-# API: http://localhost:3001
-# Swagger: http://localhost:3001/api-docs
+## 🗄️ Veri Modelleri
+
+### Tour Modeli
+```csharp
+public class Tour
+{
+    public int Id { get; set; }
+    public string TourName { get; set; }
+    public string Country { get; set; }
+    public string City { get; set; }
+    public string Description { get; set; }
+    public decimal Price { get; set; }
+    public int DurationDays { get; set; }
+    public bool IsAvailable { get; set; }
+    public string Category { get; set; }
+    public int MaxPersons { get; set; }
+    public double Rating { get; set; }
+}
 ```
 
-## API Kullanımı
-
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| GET | /api/products | Tüm ürünleri listele |
-| GET | /api/products?filter=critical | Kritik ürünleri listele |
-| GET | /api/products?sortBy=asc | Son tarihe göre sırala |
-| GET | /api/products/:id | Tek ürün getir |
-| POST | /api/products | Yeni ürün ekle |
-| PUT | /api/products/:id | Ürün güncelle |
-| DELETE | /api/products/:id | Ürün sil |
-
-### Örnek İstek
-
-```bash
-curl -X POST http://localhost:3001/api/products \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Süt","category":"Süt Ürünleri","quantity":1,"unit":"L","expiry_date":"2026-05-20"}'
+### Booking Modeli
+```csharp
+public class Booking
+{
+    public int Id { get; set; }
+    [Required] public string FullName { get; set; }
+    [Required][EmailAddress] public string Email { get; set; }
+    [Required] public string Phone { get; set; }
+    [Range(1, 20)] public int PersonCount { get; set; }
+    [Required] public DateTime TravelDate { get; set; }
+    [Required] public int SelectedTourId { get; set; }
+    public string Notes { get; set; }
+}
 ```
 
-## Testleri Çalıştırma
+---
 
-```bash
-cd backend
-npm test
-```
+## ✈️ Başlangıç Tur Verileri
 
-## Proje Yapısı
+| Tur Adı | Ülke | Kategori | Fiyat | Durum |
+|---|---|---|---|---|
+| Santorini Rüyası | Yunanistan | Romantik | 1.200 € | Müsait |
+| Roma'nın İzinde | İtalya | Kültür | 950 € | Müsait |
+| Bali Huzuru | Endonezya | Doğa | 1.500 € | Müsait |
+| Paris Romantizmi | Fransa | Romantik | 1.100 € | Müsait |
+| Tokyo Serüveni | Japonya | Macera | 1.800 € | Dolu |
+| Kapadokya Masalı | Türkiye | Macera | 650 € | Müsait |
 
-```
-stok-sepeti/
-├── backend/
-│   └── src/
-│       ├── app.js
-│       ├── db.js
-│       ├── swagger.js
-│       ├── routes/
-│       │   └── products.js
-│       ├── services/
-│       │   └── productService.js
-│       └── tests/
-│           └── productService.test.js
-└── frontend/
-    ├── index.html
-    ├── style.css
-    └── app.js
-```
+---
+
+## ⭐ Özellikler
+
+- MVC mimarisi ile katmanlı kod organizasyonu
+- Veritabanısız `static List<T>` ile veri yönetimi
+- `Data Annotations` ile sunucu taraflı form doğrulama
+- Bootstrap 5 ile tam responsive tasarım
+- JavaScript ile anlık fiyat hesaplama
+- Kategori ve müsaitlik bazlı tur filtreleme
+- `AntiForgeryToken` ile form güvenliği
+- `ViewBag` ile Controller-View arası veri aktarımı
+
+---
+
+*LBLM362 Web Programlama — Arel Üniversitesi — 2025-2026 Bahar*
